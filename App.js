@@ -4,7 +4,7 @@ import { StyleSheet, Text, SafeAreaView, TouchableHighlight,
   FlatList, View, Dimensions, Modal, Alert} from 'react-native';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import * as Permissions from 'expo-permissions';
+// import * as Permissions from 'expo-permissions';
 const axios = require("axios");
 
 const LOCATION_TRACKING = 'location-tracking';
@@ -43,17 +43,8 @@ export default function App() {
     console.log('tracking started?', hasStopped);
   };
   useEffect(() => {
-    const config = async () => {
-      let res = await Permissions.askAsync(Permissions.LOCATION);
-      if (res.status !== 'granted') {
-        console.log('Permission to access location was denied');
-      } else {
-        console.log('Permission to access location granted');
-      }
-    };
-    config();
     (async () => {
-      let { status } = await Location.requestPermissionsAsync();
+      let { status } = await Location.requestBackgroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
         return;
@@ -84,7 +75,7 @@ export default function App() {
   );
   findCoordinates = async() => {
     console.log("click  odczyt");
-    const {status} = await  Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Location.requestBackgroundPermissionsAsync();
     console.log(`status ${status}`);
     if (status != 'granted'){
       console.log('PERMITION NOT GRANTED!');
